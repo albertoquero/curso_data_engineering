@@ -37,76 +37,93 @@ vars:
 seeds:
   curso_data_eng:
     curso_data_engineer:
-      +enabled: false
+      +enabled: true
       +database: "{{ env_var('DBT_DB_USER') }}_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_BRONZE_DB" 
       +schema: "SEEDS"
       +tags: ['curso']
-    certificacion:
-      +enabled: true
-      +database: "{{ env_var('DBT_DB_USER') }}_CERT_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_BRONZE_DB"  
-      +schema: "SEEDS"
-      +tags: ['cert']
-      +alias: persona_dbt_project_file
-      +pre_hook: "SELECT 'ejecucion dbt project.yml pre_hook' consulta from dual;" #Se ejecuta antes que el yml a nivel de seed y posteriormente a un paquete
-      +post_hook: "SELECT 'ejecucion dbt_project.yml post_hook' consulta from dual;"
+    #certificacion:
+    #  +enabled: false
+    #  +database: "{{ env_var('DBT_DB_USER') }}_CERT_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_BRONZE_DB"  
+    #  +schema: "SEEDS"
+    #  +tags: ['cert']
+    #  +alias: persona_dbt_project_file
+    #  +pre_hook: "SELECT 'ejecucion dbt project.yml pre_hook' consulta from dual;" #Se ejecuta antes que el yml a nivel de seed y posteriormente a un paquete
+    #  +post_hook: "SELECT 'ejecucion dbt_project.yml post_hook' consulta from dual;"
   
 #Configuraciones de SOURCES
 sources:
   curso_data_eng:
     curso_data_engineer:
-      +enabled: false
-    certificacion:
       +enabled: true
+    #certificacion:
+    #  +enabled: false
       #+event_time: Se usa para tema de microparticiones
-      +freshness:
-        warn_after:
-          count: 10
-          period: hour
-        error_after:
-          count: 1000
-          period: day
+    #  +freshness:
+    #    warn_after:
+    #      count: 10
+    #      period: hour
+    #    error_after:
+    #      count: 1000
+    #      period: day
       #+meta:
         #key:value
 #Configuraciones de SNAPSHOTS
 snapshots:
   curso_data_eng:
     curso_data_engineer:
-      +enabled: false
+      +enabled: true
 
 #Configuraciones de MODELOS
 models:
   curso_data_eng:
-    curso_data_engineer:
-      +enabled: false #desactivo todo lo que hay en el directorio para que no lo tenga en cuenta por conflicto de nombres
     certificacion:
-      google_sheets:
-        +database: "{{ env_var('DBT_DB_USER') }}_CERT_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_SILVER_DB"
+      +enabled: false
+    curso_data_engineer:
+      +enabled: true #desactivo todo lo que hay en el directorio para que no lo tenga en cuenta por conflicto de nombres
+        #curso_data_eng:
+    # Applies to all files under models/example/
+      staging:
         +materialized: view
+        +database: "{{ env_var('DBT_DB_USER') }}_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_SILVER_DB"
+        +tags: ['staging']
+        google_sheets:
+          +schema: google_sheets
+          +tags: ['google_sheets']
+        sql_server_dbo:
+          +schema: sql_server_dbo
+          +tags: ['sql_server_dbo']
+        example:
+          +tags: ['example']
+          +schema: example
+      marts:
+        +database: "{{ env_var('DBT_DB_USER') }}_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_GOLD_DB"
+        +materialized: table
+        +tags: ['marts']
+        core:
+          +schema: core
+        marketing:
+          +schema: marketing
+        product:
+          +schema: product
+    #certificacion:
+    #  utilities:
+    #     +database: "{{ env_var('DBT_DB_USER') }}_CERT_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_SILVER_DB"
+    #     +materialized: table
+    #     +schema: utilities
+    #  marts:
+    #    core:
+    #      +database: "{{ env_var('DBT_DB_USER') }}_CERT_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_GOLD_DB"
+    #      +materialized: table
+    #      +schema: core
+
+    #staging:
+        #+database: "{{ env_var('DBT_DB_USER') }}_CERT_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_SILVER_DB"
+        #+materialized: view
+        #google_sheets:  
+        #  +schema: google_sheets
+        #sql_server_dbo:
+        #  +schema: sql_server_dbo
 
 #DESCOMENTAR ESTO PARA EL CURSO
 
-#  curso_data_eng:
-    # Applies to all files under models/example/
-#    staging:
-#      +materialized: view
-#      +database: "{{ env_var('DBT_DB_USER') }}_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_SILVER_DB"
-#      +tags: ['staging']
-#      google_sheets:
-#        +schema: google_sheets
-#        +tags: ['google_sheets']
-#      sql_server_dbo:
-#        +schema: sql_server_dbo
-#        +tags: ['sql_server_dbo']
-#      example:
-#        +tags: ['example']
-#        +schema: example
-#    marts:
-#      +database: "{{ env_var('DBT_DB_USER') }}_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_GOLD_DB"
-#      +materialized: table
-#      +tags: ['marts']
-##      core:
-#        +schema: core
-#      marketing:
-#        +schema: marketing
-#      product:
-#        +schema: product
+

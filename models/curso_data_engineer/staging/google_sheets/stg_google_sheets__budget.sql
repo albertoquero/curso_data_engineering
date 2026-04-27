@@ -17,7 +17,7 @@ renamed_casted AS (
         , month
         , _fivetran_synced AS date_load
     FROM src_budget
-    where _fivetran_synced >= '{{ var('budget_date')}}'
+    --where _fivetran_synced >= '{{ var('budget_date')}}'
     )
 
 SELECT * FROM renamed_casted
