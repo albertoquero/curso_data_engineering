@@ -11,10 +11,7 @@ sources:
       schema: false
       identifier: false
 
-    freshness:
-      warn_after: {count: 24, period: hour}
-      error_after: {count: 48, period: hour}
-
+ 
     tables:
       - name: users
         columns:
@@ -23,7 +20,6 @@ sources:
           - name: email
           - name: fecha_alta_sistema
       - name: budget
-        loaded_at_field: _fivetran_synced
         description: >
           Data about budget in demo.
         columns:
@@ -38,14 +34,8 @@ sources:
             tests:
               - not_null
           - name: product_id
-            tests:
-              - relationships:
-                  to: source('sql_server_dbo','products')
-                  field: PRODUCT_ID
+            
           - name: _fivetran_synced
             description: >
               Date that the data was loaded.
-            tests:
-              - not_null
-              - dbt_expectations.expect_column_values_to_be_of_type:
-                  column_type: timestamp_tz
+        

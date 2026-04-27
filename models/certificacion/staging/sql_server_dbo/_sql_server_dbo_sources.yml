@@ -12,7 +12,7 @@ sources:
         error_after: {count: 24, period: hour}
       loaded_at_field: _FIVETRAN_SYNCED # changed to config in v1.10
     tables:
-      - name: adresses
+      - name: addresses
       - name: events
       - name: orders
       - name: order_items

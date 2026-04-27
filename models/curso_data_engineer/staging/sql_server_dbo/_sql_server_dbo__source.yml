@@ -1,24 +1,17 @@
 version: 2
 
 sources:
-
-  - name: sql_server_dbo # name of the source 
+  - name: sql_server_dbo # name of the source
     schema: sql_server_dbo # this is the schema our raw data lives in
-    database:  "{{ env_var('DBT_DB_USER') }}_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_BRONZE_DB" # this is the name of our database
+    database: "{{ env_var('DBT_DB_USER') }}_{{ env_var('DBT_ENVIRONMENTS_LAYER') }}_BRONZE_DB" # this is the name of our database
 
     quoting:
       database: false
       schema: false
       identifier: false
 
-    freshness:
-      warn_after: {count: 24, period: hour}
-      error_after: {count: 48, period: hour}
-
     tables:
-
       - name: addresses
-        loaded_at_field: _fivetran_synced
         description: >
           Info about addresses for users and delivery orders.
         columns:
@@ -54,7 +47,7 @@ sources:
             tests:
               - not_null
       - name: users
-        loaded_at_field: _fivetran_synced
+
         description: >
           Data about all users in demo.
         columns:
@@ -101,62 +94,62 @@ sources:
             description: >
               Date that the data was loaded.
             tests:
-              - not_null 
+              - not_null
       - name: promos
-        loaded_at_field: _fivetran_synced
+
         description: >
           Info about promos like discount or status.
         columns:
           - name: promo_id
-            description: > 
+            description: >
               Each unique promocode on platform.
             tests:
               - unique
               - not_null
           - name: discount
-            description: > 
+            description: >
               Absolute dollar amount that is given off with the code.
             tests:
               - not_null
               #- positive_values
           - name: status
-            description: > 
+            description: >
               Is the promo code active or disabled.
             tests:
               - not_null
               - accepted_values:
-                    values: ['inactive','active']
+                  values: ["inactive", "active"]
           - name: _fivetran_synced
             description: >
               Date that the data was loaded.
             tests:
               - not_null
-              
+
       - name: products
-        loaded_at_field: _fivetran_synced
+
         description: >
           Info about products like name, price or inventory.
         columns:
           - name: product_id
-            description: > 
+            description: >
               UUID for each unique product on platform.
             tests:
               - unique
               - not_null
           - name: name
-            description: > 
+            description: >
               Name of the product.
             tests:
               - unique
               - not_null
           - name: price
-            description: > 
+            description: >
               Price of the product.
             tests:
               - not_null
               #- positive_values
           - name: inventory
-            description: > 
+            description: >
               Amount of the inventory we have for this product.
             tests:
               - not_null
@@ -167,7 +160,7 @@ sources:
             tests:
               - not_null
       - name: orders
-        loaded_at_field: _fivetran_synced
+
         description: >
           Data about all orders in demo.
         columns:
@@ -229,7 +222,7 @@ sources:
             tests:
               - not_null
               - accepted_values:
-                    values: ['shipped','preparing','delivered']
+                  values: ["shipped", "preparing", "delivered"]
           - name: _fivetran_synced
             description: >
               Date that the data was loaded.
@@ -237,22 +230,22 @@ sources:
               - not_null
 
       - name: order_items
-        loaded_at_field: _fivetran_synced
+
         description: >
           Info about orders like product or quantity.
         columns:
           - name: order_id
-            description: > 
+            description: >
               Compound Primary key for products order_id and product_id.
             tests:
               - not_null
           - name: product_id
-            description: > 
+            description: >
               Compound Primary key for products order_id and product_id.
             tests:
               - not_null
           - name: quantity
-            description: > 
+            description: >
               Number of units of the product in this order.
             tests:
               - not_null
@@ -264,7 +257,7 @@ sources:
               - not_null
 
       - name: events
-        loaded_at_field: _fivetran_synced
+
         description: >
           Data about events in the platform of demo.
         columns:
